@@ -1,61 +1,57 @@
 import { Request, Response, Router } from 'express';
-import { DriverInputDto } from '../dto/driver.input-dto';
+import { VideoInputDto } from '../dto/video.input-dto';
 import { vehicleInputDtoValidation } from '../validation/vehicleInputDtoValidation';
 import { HttpStatus } from '../../core/types/http-statuses';
 import { createErrorMessages } from '../../core/utils/error.utils';
-import { Driver } from '../types/driver';
+import { Video } from '../types/video';
 import { db } from '../../db/in-memory.db';
 
-export const driversRouter = Router({});
+export const videosRouter = Router({});
 
-driversRouter
+videosRouter
   .get('', (req: Request, res: Response) => {
-    res.status(200).send(db.drivers);
+    res.status(200).send(db.videos);
   })
 
   .get('/:id', (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
-    const driver = db.drivers.find((d) => d.id === id);
+    const video = db.videos.find((d) => d.id === id);
 
-    if (!driver) {
+    if (!video) {
       res
         .status(HttpStatus.NotFound)
         .send(
-          createErrorMessages([{ field: 'id', message: 'Driver not found' }]),
+          createErrorMessages([{ field: 'id', message: 'Video not found' }]),
         );
       return;
     }
-    res.status(200).send(driver);
+    res.status(200).send(video);
   })
 
-  .post('', (req: Request<{}, {}, DriverInputDto>, res: Response) => {
+  .post('', (req: Request<{}, {}, VideoInputDto>, res: Response) => {
     const errors = vehicleInputDtoValidation(req.body);
 
     if (errors.length > 0) {
       res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
       return;
     }
-
-    const newDriver: Driver = {
-      id: db.drivers.length ? db.drivers[db.drivers.length - 1].id + 1 : 1,
-      name: req.body.name,
-      phoneNumber: req.body.phoneNumber,
-      email: req.body.email,
-      vehicleMake: req.body.vehicleMake,
-      vehicleModel: req.body.vehicleModel,
-      vehicleYear: req.body.vehicleYear,
-      vehicleLicensePlate: req.body.vehicleLicensePlate,
-      vehicleDescription: req.body.vehicleDescription,
-      vehicleFeatures: req.body.vehicleFeatures,
-      createdAt: new Date(),
+    const newVideo: Video = {
+      id: db.videos.length ? db.videos[db.videos.length - 1].id + 1 : 1,
+      title: req.body.title,
+      author: req.body.author,
+      canBeDownloaded: req.body.canBeDownloaded,
+      minAgeRestriction: req.body.minAgeRestriction,
+      createdAt: new Date().toISOString(),
+      publicationDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      availableResolutions: req.body.availableResolutions,
     };
-    db.drivers.push(newDriver);
-    res.status(HttpStatus.Created).send(newDriver);
+    db.videos.push(newVideo);
+    res.status(HttpStatus.Created).send(newVideo);
   })
 
   .put('/:id', (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
-    const index = db.drivers.findIndex((v) => v.id === id);
+    const index = db.videos.findIndex((v) => v.id === id);
 
     if (index === -1) {
       res
@@ -73,17 +69,15 @@ driversRouter
       return;
     }
 
-    const driver = db.drivers[index];
+    const video = db.videos[index];
 
-    driver.name = req.body.name;
-    driver.phoneNumber = req.body.phoneNumber;
-    driver.email = req.body.email;
-    driver.vehicleMake = req.body.vehicleMake;
-    driver.vehicleModel = req.body.vehicleModel;
-    driver.vehicleYear = req.body.vehicleYear;
-    driver.vehicleLicensePlate = req.body.vehicleLicensePlate;
-    driver.vehicleDescription = req.body.vehicleDescription;
-    driver.vehicleFeatures = req.body.vehicleFeatures;
+    video.title = req.body.title;
+    video.author = req.body.author;
+    video.canBeDownloaded = req.body.canBeDownloaded;
+    video.minAgeRestriction = req.body.minAgeRestriction;
+    video.createdAt = req.body.createdAt;
+    video.publicationDate = req.body.publicationDate;
+    video.availableResolutions = req.body.availableResolutions;
 
     res.sendStatus(HttpStatus.NoContent);
   })
@@ -92,7 +86,7 @@ driversRouter
     const id = parseInt(req.params.id);
 
     //ищет первый элемент, у которого функция внутри возвращает true и возвращает индекс этого элемента в массиве, если id ни у кого не совпал, то findIndex вернёт -1.
-    const index = db.drivers.findIndex((v) => v.id === id);
+    const index = db.videos.findIndex((v) => v.id === id);
 
     if (index === -1) {
       res
@@ -103,6 +97,6 @@ driversRouter
       return;
     }
 
-    db.drivers.splice(index, 1);
+    db.videos.splice(index, 1);
     res.sendStatus(HttpStatus.NoContent);
   });

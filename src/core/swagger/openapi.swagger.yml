@@ -8,4 +8,4 @@ tags:
   - name: Testing
     description: API for clearing the database
   - name: Drivers
-    description: API for managing drivers
+    description: API for managing videos

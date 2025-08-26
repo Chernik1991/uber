@@ -1,21 +1,21 @@
 tags:
   - name: Drivers
-    description: API for managing drivers
+    description: API for managing videos
 
 paths:
   /api/drivers:
     get:
-      summary: Get a list of all drivers
+      summary: Get a list of all videos
       tags: [ Drivers ]
       responses:
         200:
-          description: List of all drivers
+          description: List of all videos
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Driver'
+                  $ref: '#/components/schemas/Video'
     post:
       summary: Add a new driver
       tags: [ Drivers ]
@@ -24,14 +24,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DriverInputDto'
+              $ref: '#/components/schemas/VideoInputDto'
       responses:
         201:
           description: The driver was successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Driver'
+                $ref: '#/components/schemas/Video'
         400:
           description: Validation error
           content:
@@ -57,9 +57,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Driver'
+                $ref: '#/components/schemas/Video'
         404:
-          description: Driver not found
+          description: Video not found
     put:
       summary: Update a driver by ID
       tags: [ Drivers ]
@@ -76,10 +76,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DriverInputDto'
+              $ref: '#/components/schemas/VideoInputDto'
       responses:
         204:
-          description: Driver updated successfully
+          description: Video updated successfully
         400:
           description: Validation error
           content:
@@ -87,7 +87,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationErrorResponse'
         404:
-          description: Driver not found
+          description: Video not found
     delete:
       summary: Delete a driver by ID
       tags: [ Drivers ]
@@ -101,9 +101,9 @@ paths:
             example: 2
       responses:
         204:
-          description: Driver deleted successfully
+          description: Video deleted successfully
         404:
-          description: Driver not found
+          description: Video not found
 components:
   schemas:
     Driver:
