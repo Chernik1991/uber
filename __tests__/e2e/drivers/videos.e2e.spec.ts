@@ -20,50 +20,48 @@ describe('Video API', () => {
   };
 
   beforeAll(async () => {
-    await request(app)
-      .delete('/hometask_01/api/testing/all-data')
-      .expect(HttpStatus.NoContent);
+    await request(app).delete('/testing/all-data').expect(HttpStatus.NoContent);
   });
 
-  it('should create driver; POST /hometask_01/api/videos', async () => {
+  it('should create driver; POST /videos', async () => {
     const newVideo: VideoInputDto = {
       ...testVideoData,
       title: 'KIRIL',
     };
 
     await request(app)
-      .post('/hometask_01/api/videos')
+      .post('/videos')
       .send(newVideo)
       .expect(HttpStatus.Created);
   });
 
-  it('should return videos list; GET /hometask_01/api/videos', async () => {
+  it('should return videos list; GET /videos', async () => {
     await request(app)
-      .post('/hometask_01/api/videos')
+      .post('/videos')
       .send({ ...testVideoData, name: 'Another Video' })
       .expect(HttpStatus.Created);
 
     await request(app)
-      .post('/hometask_01/api/videos')
+      .post('/videos')
       .send({ ...testVideoData, name: 'Another Video2' })
       .expect(HttpStatus.Created);
 
     const videoListResponse = await request(app)
-      .get('/hometask_01/api/videos')
+      .get('/videos')
       .expect(HttpStatus.Ok);
 
     expect(videoListResponse.body).toBeInstanceOf(Array);
     expect(videoListResponse.body.length).toBeGreaterThanOrEqual(2);
   });
 
-  it('should return driver by id; GET /hometask_01/api/videos/:id', async () => {
+  it('should return driver by id; GET /videos/:id', async () => {
     const createResponse = await request(app)
-      .post('/hometask_01/api/videos')
+      .post('/videos')
       .send({ ...testVideoData, name: 'Another Video' })
       .expect(HttpStatus.Created);
 
     const getResponse = await request(app)
-      .get(`/hometask_01/api/videos/${createResponse.body.id}`)
+      .get(`/videos/${createResponse.body.id}`)
       .expect(HttpStatus.Ok);
 
     expect(getResponse.body).toEqual({
@@ -73,9 +71,9 @@ describe('Video API', () => {
     });
   });
 
-  it('should update driver; PUT /hometask_01/api/videos/:id', async () => {
+  it('should update driver; PUT /videos/:id', async () => {
     const createResponse = await request(app)
-      .post('/hometask_01/api/videos')
+      .post('/videos')
       .send({ ...testVideoData, name: 'Another Video' })
       .expect(HttpStatus.Created);
 
@@ -90,12 +88,12 @@ describe('Video API', () => {
     };
 
     await request(app)
-      .put(`/hometask_01/api/videos/${createResponse.body.id}`)
+      .put(`/videos/${createResponse.body.id}`)
       .send(videoUpdateData)
       .expect(HttpStatus.NoContent);
 
     const videoResponse = await request(app).get(
-      `/hometask_01/api/videos/${createResponse.body.id}`,
+      `/videos/${createResponse.body.id}`,
     );
 
     expect(videoResponse.body).toEqual({
@@ -106,21 +104,19 @@ describe('Video API', () => {
     });
   });
 
-  it('DELETE /hometask_01/api/videos/:id and check after NOT FOUND', async () => {
+  it('DELETE /videos/:id and check after NOT FOUND', async () => {
     const {
       body: { id: createdVideoId },
     } = await request(app)
-      .post('/hometask_01/api/videos')
+      .post('/videos')
       .send({ ...testVideoData, name: 'Another Video' })
       .expect(HttpStatus.Created);
 
     await request(app)
-      .delete(`/hometask_01/api/videos/${createdVideoId}`)
+      .delete(`/videos/${createdVideoId}`)
       .expect(HttpStatus.NoContent);
 
-    const videoResponse = await request(app).get(
-      `/hometask_01/api/videos/${createdVideoId}`,
-    );
+    const videoResponse = await request(app).get(`/videos/${createdVideoId}`);
     expect(videoResponse.status).toBe(HttpStatus.NotFound);
   });
 });

@@ -20,14 +20,12 @@ describe('Video API body validation check', () => {
   };
 
   beforeAll(async () => {
-    await request(app)
-      .delete('/hometask_01/api/testing/all-data')
-      .expect(HttpStatus.NoContent);
+    await request(app).delete('/testing/all-data').expect(HttpStatus.NoContent);
   });
 
   it(`should not create video when incorrect body passed; POST /hometask_01/api/videos'`, async () => {
     const invalidDataSet1 = await request(app)
-      .post('/hometask_01/api/videos')
+      .post('/videos')
       .send({
         ...correctTestVideoData,
         title: '   ',
@@ -40,7 +38,7 @@ describe('Video API body validation check', () => {
     expect(invalidDataSet1.body.errorMessages).toHaveLength(4);
 
     const invalidDataSet2 = await request(app)
-      .post('/hometask_01/api/videos')
+      .post('/videos')
       .send({
         ...correctTestVideoData,
         title: '   ',
@@ -53,7 +51,7 @@ describe('Video API body validation check', () => {
     expect(invalidDataSet2.body.errorMessages).toHaveLength(4);
 
     const invalidDataSet3 = await request(app)
-      .post('/hometask_01/api/videos')
+      .post('/videos')
       .send({
         ...correctTestVideoData,
         title: 'A', // too shot
@@ -63,7 +61,7 @@ describe('Video API body validation check', () => {
     expect(invalidDataSet3.body.errorMessages).toHaveLength(2);
 
     // check что никто не создался
-    const videoListResponse = await request(app).get('/hometask_01/api/videos');
+    const videoListResponse = await request(app).get('/videos');
     expect(videoListResponse.body).toHaveLength(0);
   });
 
@@ -71,24 +69,25 @@ describe('Video API body validation check', () => {
     const {
       body: { id: createdVideoId },
     } = await request(app)
-      .post('/hometask_01/api/videos')
+      .post('/videos')
       .send({ ...correctTestVideoData })
       .expect(HttpStatus.Created);
 
     const invalidDataSet1 = await request(app)
-      .put(`/hometask_01/api/videos/${createdVideoId}`)
+      .put(`/videos/${createdVideoId}`)
       .send({
         ...correctTestVideoData,
         title: '   ',
         author: '    ',
-        canBeDownloaded: null,
+        // canBeDownloaded: null,
+        // minAgeRestriction: null,
       })
       .expect(HttpStatus.BadRequest);
 
-    expect(invalidDataSet1.body.errorMessages).toHaveLength(3);
+    expect(invalidDataSet1.body.errorMessages).toHaveLength(2);
 
     const invalidDataSet2 = await request(app)
-      .put(`/hometask_01/api/videos/${createdVideoId}`)
+      .put(`/videos/${createdVideoId}`)
       .send({
         ...correctTestVideoData,
         title: '   ',
@@ -100,7 +99,7 @@ describe('Video API body validation check', () => {
     expect(invalidDataSet2.body.errorMessages).toHaveLength(3);
 
     const invalidDataSet3 = await request(app)
-      .put(`/hometask_01/api/videos/${createdVideoId}`)
+      .put(`/videos/${createdVideoId}`)
       .send({
         ...correctTestVideoData,
         title: 'A', //too short
@@ -110,12 +109,12 @@ describe('Video API body validation check', () => {
 
     expect(invalidDataSet3.body.errorMessages).toHaveLength(3);
 
-    const videoResponse = await request(app).get(
-      `/hometask_01/api/videos/${createdVideoId}`,
-    );
+    const videoResponse = await request(app).get(`/videos/${createdVideoId}`);
 
     expect(videoResponse.body).toEqual({
       ...correctTestVideoData,
+      canBeDownloaded: false,
+      minAgeRestriction: null,
       id: createdVideoId,
       createdAt: expect.any(String),
       publicationDate: expect.any(String),
@@ -126,12 +125,12 @@ describe('Video API body validation check', () => {
     const {
       body: { id: createdVideoId },
     } = await request(app)
-      .post('/hometask_01/api/videos')
+      .post('/videos')
       .send({ ...correctTestVideoData })
       .expect(HttpStatus.Created);
 
     await request(app)
-      .put(`/hometask_01/api/videos/${createdVideoId}`)
+      .put(`/videos/${createdVideoId}`)
       .send({
         ...correctTestVideoData,
         availableResolutions: [
@@ -142,12 +141,12 @@ describe('Video API body validation check', () => {
       })
       .expect(HttpStatus.BadRequest);
 
-    const videoResponse = await request(app).get(
-      `/hometask_01/api/videos/${createdVideoId}`,
-    );
+    const videoResponse = await request(app).get(`/videos/${createdVideoId}`);
 
     expect(videoResponse.body).toEqual({
       ...correctTestVideoData,
+      canBeDownloaded: false,
+      minAgeRestriction: null,
       id: createdVideoId,
       createdAt: expect.any(String),
       publicationDate: expect.any(String),
