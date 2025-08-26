@@ -35,7 +35,7 @@ describe('Video API body validation check', () => {
       })
       .expect(HttpStatus.BadRequest);
 
-    expect(invalidDataSet1.body.errorMessages).toHaveLength(4);
+    expect(invalidDataSet1.body.errorMessages).toHaveLength(2);
 
     const invalidDataSet2 = await request(app)
       .post('/videos')
@@ -48,7 +48,7 @@ describe('Video API body validation check', () => {
       })
       .expect(HttpStatus.BadRequest);
 
-    expect(invalidDataSet2.body.errorMessages).toHaveLength(4);
+    expect(invalidDataSet2.body.errorMessages).toHaveLength(2);
 
     const invalidDataSet3 = await request(app)
       .post('/videos')
@@ -96,7 +96,7 @@ describe('Video API body validation check', () => {
       })
       .expect(HttpStatus.BadRequest);
 
-    expect(invalidDataSet2.body.errorMessages).toHaveLength(3);
+    expect(invalidDataSet2.body.errorMessages).toHaveLength(2);
 
     const invalidDataSet3 = await request(app)
       .put(`/videos/${createdVideoId}`)
@@ -107,7 +107,7 @@ describe('Video API body validation check', () => {
       })
       .expect(HttpStatus.BadRequest);
 
-    expect(invalidDataSet3.body.errorMessages).toHaveLength(3);
+    expect(invalidDataSet3.body.errorMessages).toHaveLength(2);
 
     const videoResponse = await request(app).get(`/videos/${createdVideoId}`);
 

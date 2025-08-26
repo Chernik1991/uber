@@ -27,11 +27,9 @@ export const vehicleInputDtoValidation = (
   }
 
   if (
-    !data.minAgeRestriction ||
-    typeof data.minAgeRestriction !== 'number' ||
-    data.minAgeRestriction < 1 ||
-    data.minAgeRestriction > 18
-    // data.minAgeRestriction === null
+    data.minAgeRestriction &&
+    typeof data.minAgeRestriction === 'number' &&
+    (data.minAgeRestriction < 1 || data.minAgeRestriction > 18)
   ) {
     errors.push({
       field: 'minAgeRestriction',
@@ -39,7 +37,7 @@ export const vehicleInputDtoValidation = (
     });
   }
   if (
-    !data.canBeDownloaded ||
+    data.canBeDownloaded &&
     typeof data.canBeDownloaded !== 'boolean'
     // data.canBeDownloaded === null
   ) {
