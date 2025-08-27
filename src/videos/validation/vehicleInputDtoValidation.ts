@@ -2,7 +2,7 @@ import { VideoInputDto } from '../dto/video.input-dto';
 import { ValidationError } from '../types/validationError';
 import { AvailableResolutions } from '../types/video';
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const isoRegex = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/;
 
 export const vehicleInputDtoValidation = (
   data: VideoInputDto,
@@ -92,17 +92,16 @@ export const vehicleInputDtoValidation = (
   //   });
   // }
 
-  // if (
-  //   data.vehicleDescription !== null &&
-  //   (typeof data.vehicleDescription !== 'string' ||
-  //     data.vehicleDescription.trim().length < 10 ||
-  //     data.vehicleDescription.trim().length > 200)
-  // ) {
-  //   errors.push({
-  //     field: 'vehicleDescription',
-  //     message: 'Invalid vehicleDescription',
-  //   });
-  // }
+  if (
+    data.publicationDate !== null &&
+    (typeof data.publicationDate !== 'string' ||
+      !isoRegex.test(data.publicationDate))
+  ) {
+    errors.push({
+      field: 'publicationDate',
+      message: 'Invalid publicationDate',
+    });
+  }
 
   if (!Array.isArray(data.availableResolutions)) {
     errors.push({
@@ -123,7 +122,7 @@ export const vehicleInputDtoValidation = (
     for (const resolutions of data.availableResolutions) {
       if (!existingResolutions.includes(resolutions)) {
         errors.push({
-          field: 'resolutions',
+          field: 'availableResolutions',
           message: 'Invalid availableResolutions:' + resolutions,
         });
         break;
