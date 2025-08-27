@@ -21,7 +21,7 @@ export const vehicleInputDtoValidation = (
   if (
     !data.author ||
     typeof data.author !== 'string' ||
-    data.title.trim().length < 2 ||
+    data.author.trim().length < 2 ||
     data.author.trim().length > 20
   ) {
     errors.push({ field: 'author', message: 'Invalid author' });
