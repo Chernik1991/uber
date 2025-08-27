@@ -11,6 +11,7 @@ export const vehicleInputDtoValidation = (
 
   if (
     !data.title ||
+    data.title === null ||
     typeof data.title !== 'string' ||
     data.title.trim().length < 2 ||
     data.title.trim().length > 40
