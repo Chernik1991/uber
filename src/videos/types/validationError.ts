@@ -1,5 +1,5 @@
 export type ValidationError = {
-  field: string;
   message: string;
+  field: string;
 };
 //todo
