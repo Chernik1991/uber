@@ -92,11 +92,7 @@ export const vehicleInputDtoValidation = (
   //   });
   // }
 
-  if (
-    data.publicationDate !== null &&
-    (typeof data.publicationDate !== 'string' ||
-      !isoRegex.test(data.publicationDate))
-  ) {
+  if (data.publicationDate && !isoRegex.test(data.publicationDate)) {
     errors.push({
       field: 'publicationDate',
       message: 'Invalid publicationDate',
