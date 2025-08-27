@@ -66,6 +66,7 @@ videosRouter
 
     if (errors.length > 0) {
       res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
+      console.log(res);
       return;
     }
 
